@@ -15,7 +15,7 @@ const loadLatestPost = async () => {
 loadLatestPost()
 
 const displayLatestPost = (posts) => {
-  console.log(posts);
+  // console.log(posts);
   posts.map((post) => {
     document.getElementById("latest-post-container").innerHTML += `
     <div class="card lg:w-96 pb-0 bg-base-100 shadow-2xl h-[550px]">
@@ -119,7 +119,7 @@ loadAllPost(searchText)
 }
 
 const markAsRead = (description, view_count) => {
-  console.log(description, view_count);
+  // console.log(description, view_count);
   const markAsReadContainer = document.getElementById("markAsReadContainer")
   const div = document.createElement("div")
   div.innerHTML = `
@@ -137,5 +137,45 @@ const markAsRead = (description, view_count) => {
   let count = parseInt(countEl.innerText)
   countEl.innerText = count + 1
 
+}
+
+const loadCategory = async () =>{
+  const res = await fetch(`https://openapi.programming-hero.com/api/retro-forum/posts`)
+  const data = await res.json()
+  displayCategory(data.posts);
+}
+loadCategory()
+
+// const displayCategory = (posts) => {
+//   const uniqueCategories = [...new Set(posts.map(post => post.category))];
+ 
+//    document.getElementById("category-btn").innerHTML += `
+//    <button id="category-btn" class="btn btn-sm bg-transparent text-white">${uniqueCategories}</button>
+//    `
+ 
+// }
+
+const displayCategory = (posts) => {
+  // Extract unique categories
+  const uniqueCategories = [...new Set(posts.map(post => post.category))];
+
+  // Clear any existing buttons before adding new ones
+  const categoryContainer = document.getElementById("category-btn-container");
+  categoryContainer.innerHTML = ''; // Clear existing content
+
+  // Dynamically add buttons without commas
+  uniqueCategories.forEach((category) => {
+    const button = document.createElement('button');
+    button.className = "btn btn-sm bg-transparent text-white";
+    button.textContent = category;
+    button.id = `category-btn-${category}`
+    categoryContainer.appendChild(button);
+    const categoryBtn = document.getElementById(`category-btn-${category}`)
+    categoryBtn.addEventListener('click', ()=>{
+      console.log(categoryBtn.innerText);
+      const categoryBtnText = categoryBtn.innerText
+      document.getElementById("searchPosts").value = categoryBtnText
+    })
+  });
 }
 
